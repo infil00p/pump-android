@@ -1,15 +1,13 @@
-
-(function(exports){
+var PumpService = {
     
-exports.PumpService = {
-    
-    baseUrl:"",
+    baseUrl:"http://23.21.32.1",
     
     getMessagesNear:function(cb,lat,lon,radius) {
         var xhr = new XMLHttpRequest();
-        var url = baseUrl + "/messages?latitude=" + lat + "&longitude=" + lon + "&radius=" + radius;
+        var url = this.baseUrl + "/messages?latitude=" + lat + "&longitude=" + lon + "&radius=" + radius;
         xhr.onreadystatechange = function() {
             if (xhr.readyState === 4) {
+                //console.log("Result:" + xhr.responseText);
                 cb(xhr.status,JSON.parse(xhr.responseText));
             }
         };
@@ -19,18 +17,18 @@ exports.PumpService = {
     
     leaveMessage:function(cb,lat,lon,message){
         var xhr = new XMLHttpRequest();
-        var url = baseUrl + "/message";
+        var url = this.baseUrl + "/message";
         xhr.onreadystatechange = function() {
+            console.log("Ready state = " + xhr.readyState);
             if (xhr.readyState === 4) {
-                cb(xhr.status,JSON.parse(xhr.responseText));
+                cb(xhr.status);
             }
         };
         xhr.open("POST",url,true);
-        var obj = {latitude:lat,
-                   longitude:lon,
-                   message:message};
-        xhr.send(obj);
-    };
+        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        var param = "latitude=" + lat + "&longitude=" + lon + "&message=" + encodeURIComponent(message);
+        xhr.send(param);
+    }
     
     
-})(window);
+};
